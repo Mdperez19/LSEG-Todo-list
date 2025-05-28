@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lseg.todolist.task.application.createtask.CreationTask;
 import com.lseg.todolist.task.application.createtask.CreationTaskCommand;
 import com.lseg.todolist.task.application.readalltasks.TaskReader;
+import com.lseg.todolist.task.application.readtask.TaskDetailReader;
 import com.lseg.todolist.task.domain.entity.Status;
 import com.lseg.todolist.task.domain.entity.Task;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -41,6 +43,9 @@ class TaskRestControllerTest {
 
     @MockitoBean
     private TaskReader taskReader;
+
+    @MockitoBean
+    private TaskDetailReader taskDetailReader;
 
 
     @Test
@@ -128,7 +133,7 @@ class TaskRestControllerTest {
     void should_return_empty_page_when_no_tasks_exist() throws Exception {
         // Given
         PageRequest pageable = PageRequest.of(0, 10);
-        Page<Task> emptyPage = new PageImpl<>(List.<Task>of(), pageable, 0);
+        Page<Task> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
         when(taskReader.executeTaskReader(any(PageRequest.class))).thenReturn(emptyPage);
 
@@ -145,6 +150,59 @@ class TaskRestControllerTest {
                 .andExpect(jsonPath("$.totalPages").value(0))
                 .andExpect(jsonPath("$.size").value(10))
                 .andExpect(jsonPath("$.number").value(0));
+    }
+
+    @Test
+    @DisplayName("Should return task with 200 status when task exists")
+    void should_return_task_with_200_status_when_task_exists() throws Exception {
+        // Given
+        UUID taskId = UUID.randomUUID();
+        Task task = Task.builder()
+                .id(taskId)
+                .title("Test Task")
+                .description("Test Description")
+                .dueDate(LocalDate.now().plusDays(1))
+                .status(Status.PENDING)
+                .build();
+
+        when(taskDetailReader.executeTaskDetailReader(taskId))
+                .thenReturn(Optional.of(task));
+
+        // When / Then
+        mockMvc.perform(get("/tasks/{id}", taskId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(taskId.toString()))
+                .andExpect(jsonPath("$.title").value("Test Task"))
+                .andExpect(jsonPath("$.description").value("Test Description"))
+                .andExpect(jsonPath("$.status").value("PENDING"));
+    }
+
+    @Test
+    @DisplayName("Should return 404 status when task does not exist")
+    void should_return_404_status_when_task_does_not_exist() throws Exception {
+        // Given
+        UUID nonExistentTaskId = UUID.randomUUID();
+        when(taskDetailReader.executeTaskDetailReader(nonExistentTaskId))
+                .thenReturn(Optional.empty());
+
+        // When / Then
+        mockMvc.perform(get("/tasks/{id}", nonExistentTaskId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Should return 400 status when invalid UUID is provided")
+    void should_return_400_status_when_invalid_uuid_is_provided() throws Exception {
+        // Given
+        String invalidUUID = "not-a-uuid";
+
+        // When / Then
+        mockMvc.perform(get("/tasks/{id}", invalidUUID)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
 
