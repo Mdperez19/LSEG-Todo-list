@@ -34,6 +34,8 @@ docker-compose up --build
 La aplicación estará disponible en:
 - API: http://localhost:8080
 - Swagger UI: http://localhost:8080/api-docs/swagger-ui.html
+![image](https://github.com/user-attachments/assets/189cf7b7-a792-47bf-bdde-9b313544b15f)
+
 - Base de datos PostgreSQL: jdbc:postgresql://localhost:5433/tododb
 
 ## Endpoints
