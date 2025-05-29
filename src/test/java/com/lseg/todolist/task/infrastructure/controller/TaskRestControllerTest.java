@@ -5,6 +5,8 @@ import com.lseg.todolist.task.application.createtask.CreationTask;
 import com.lseg.todolist.task.application.createtask.CreationTaskCommand;
 import com.lseg.todolist.task.application.readalltasks.TaskReader;
 import com.lseg.todolist.task.application.readtask.TaskDetailReader;
+import com.lseg.todolist.task.application.updatetaskstatus.TaskStatusUpdater;
+import com.lseg.todolist.task.application.updatetaskstatus.UpdateTaskStatusCommand;
 import com.lseg.todolist.task.domain.entity.Status;
 import com.lseg.todolist.task.domain.entity.Task;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +27,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TaskRestController.class)
@@ -46,6 +47,9 @@ class TaskRestControllerTest {
 
     @MockitoBean
     private TaskDetailReader taskDetailReader;
+
+    @MockitoBean
+    private TaskStatusUpdater taskStatusUpdater;
 
 
     @Test
@@ -205,5 +209,79 @@ class TaskRestControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("Should update task status and return 200 when task exists")
+    void should_update_task_status_and_return_200_when_task_exists() throws Exception {
+        // Given
+        UUID taskId = UUID.randomUUID();
+        UpdateTaskStatusCommand command = new UpdateTaskStatusCommand(Status.IN_PROGRESS);
+
+        Task updatedTask = Task.builder()
+                .id(taskId)
+                .title("Test Task")
+                .description("Test Description")
+                .dueDate(LocalDate.now())
+                .status(Status.IN_PROGRESS)
+                .build();
+
+        when(taskStatusUpdater.executeUpdateTaskStatus(taskId, command))
+                .thenReturn(updatedTask);
+
+        // When / Then
+        mockMvc.perform(put("/tasks/{id}/status", taskId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(command)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(taskId.toString()))
+                .andExpect(jsonPath("$.status").value(Status.IN_PROGRESS.name()))
+                .andExpect(jsonPath("$.title").value("Test Task"))
+                .andExpect(jsonPath("$.description").value("Test Description"));
+    }
+
+    @Test
+    @DisplayName("Should return 404 when updating status of non-existent task")
+    void should_return_404_when_updating_status_of_non_existent_task() throws Exception {
+        // Given
+        UUID nonExistentTaskId = UUID.randomUUID();
+        UpdateTaskStatusCommand command = new UpdateTaskStatusCommand(Status.IN_PROGRESS);
+
+        when(taskStatusUpdater.executeUpdateTaskStatus(nonExistentTaskId, command))
+                .thenThrow(new IllegalArgumentException("Task not found with id: " + nonExistentTaskId));
+
+        // When / Then
+        mockMvc.perform(put("/tasks/{id}/status", nonExistentTaskId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(command)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Should return 400 when updating status with invalid UUID")
+    void should_return_400_when_updating_status_with_invalid_uuid() throws Exception {
+        // Given
+        String invalidUUID = "not-a-uuid";
+        UpdateTaskStatusCommand command = new UpdateTaskStatusCommand(Status.IN_PROGRESS);
+
+        // When / Then
+        mockMvc.perform(put("/tasks/{id}/status", invalidUUID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(command)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should return 400 when updating status with invalid request body")
+    void should_return_400_when_updating_status_with_invalid_request_body() throws Exception {
+        // Given
+        UUID taskId = UUID.randomUUID();
+        String invalidJson = "{\"status\": \"INVALID_STATUS\"}";
+
+        // When / Then
+        mockMvc.perform(put("/tasks/{id}/status", taskId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson))
+                .andExpect(status().isBadRequest());
+    }
 
 }
