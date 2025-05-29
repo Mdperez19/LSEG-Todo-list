@@ -40,13 +40,15 @@ La aplicación estará disponible en:
 
 ## Endpoints
 
-| Método | URL | Descripción |
-|--------|-----|-------------|
-| POST | `/tasks` | Crear tarea |
-| GET | `/tasks` | Listar tareas (paginado) |
-| GET | `/tasks/{id}` | Obtener tarea por ID |
-| PUT | `/tasks/{id}/status` | Actualizar estado de tarea |
-| DELETE | `/tasks/{id}` | Eliminar tarea |
+## Endpoints
+
+| Método | URL                  | Request Body              | Response Body          | Códigos HTTP               | Descripción                       |
+|--------|----------------------|---------------------------|------------------------|----------------------------|-----------------------------------|
+| POST   | `/tasks`             | CreationTaskCommand       | Task                   | 201 (Created), 400 (Bad Request) | Crear tarea                      |
+| GET    | `/tasks`             | -                         | Page<Task>             | 200 (OK)                   | Listar tareas (paginado)          |
+| GET    | `/tasks/{id}`        | -                         | Task                   | 200 (OK), 404 (Not Found)  | Obtener tarea por ID              |
+| PUT    | `/tasks/{id}/status` | UpdateTaskStatusCommand   | Task                   | 200 (OK), 404 (Not Found)  | Actualizar estado de tarea        |
+| DELETE | `/tasks/{id}`        | -                         | -                      | 204 (No Content), 404 (Not Found) | Eliminar tarea               |
 
 ### Listar Tareas (Paginado)
 
