@@ -3,6 +3,7 @@ package com.lseg.todolist.task.infrastructure.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lseg.todolist.task.application.createtask.CreationTask;
 import com.lseg.todolist.task.application.createtask.CreationTaskCommand;
+import com.lseg.todolist.task.application.deletetask.TaskDeleter;
 import com.lseg.todolist.task.application.readalltasks.TaskReader;
 import com.lseg.todolist.task.application.readtask.TaskDetailReader;
 import com.lseg.todolist.task.application.updatetaskstatus.TaskStatusUpdater;
@@ -26,7 +27,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -50,6 +51,9 @@ class TaskRestControllerTest {
 
     @MockitoBean
     private TaskStatusUpdater taskStatusUpdater;
+
+    @MockitoBean
+    private TaskDeleter taskDeleter;
 
 
     @Test
@@ -283,5 +287,42 @@ class TaskRestControllerTest {
                         .content(invalidJson))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @DisplayName("Should delete task and return 204 when task exists")
+    void should_delete_task_and_return_204_when_task_exists() throws Exception {
+        // Given
+        UUID taskId = UUID.randomUUID();
+        doNothing().when(taskDeleter).executeDeleteTask(taskId);
+
+        // When / Then
+        mockMvc.perform(delete("/tasks/{id}", taskId))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Should return 404 when deleting non-existent task")
+    void should_return_404_when_deleting_non_existent_task() throws Exception {
+        // Given
+        UUID nonExistentTaskId = UUID.randomUUID();
+        doThrow(new IllegalArgumentException("Task not found"))
+                .when(taskDeleter).executeDeleteTask(nonExistentTaskId);
+
+        // When / Then
+        mockMvc.perform(delete("/tasks/{id}", nonExistentTaskId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Should return 400 when deleting with invalid UUID")
+    void should_return_400_when_deleting_with_invalid_uuid() throws Exception {
+        // Given
+        String invalidUUID = "not-a-uuid";
+
+        // When / Then
+        mockMvc.perform(delete("/tasks/{id}", invalidUUID))
+                .andExpect(status().isBadRequest());
+    }
+
 
 }
