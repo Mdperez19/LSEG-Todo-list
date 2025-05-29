@@ -40,8 +40,6 @@ La aplicación estará disponible en:
 
 ## Endpoints
 
-## Endpoints
-
 | Método | URL                  | Request Body              | Response Body          | Códigos HTTP               | Descripción                       |
 |--------|----------------------|---------------------------|------------------------|----------------------------|-----------------------------------|
 | POST   | `/tasks`             | CreationTaskCommand       | Task                   | 201 (Created), 400 (Bad Request) | Crear tarea                      |
@@ -62,6 +60,24 @@ Ejemplos:
 - Segunda página, 10 elementos: `/tasks?page=1&size=10`
 - Ordenar por título ascendente: `/tasks?page=0&size=10&sort=title,asc`
 - Ordenar por fecha de vencimiento descendente: `/tasks?page=0&size=10&sort=dueDate,desc`
+
+### Pruebas en POSTMAN (Se incluye colección)
+
+- Crear una tarea (POST /tasks)
+  ![image](https://github.com/user-attachments/assets/11c41a03-4a8a-46d3-809c-637e0e93e2e3)
+
+- Consultar una lista de tareas (GET /tasks)
+  ![image](https://github.com/user-attachments/assets/248daab8-9e26-4927-96b0-920fb984f114)
+
+- Consultar detalle de una tarea (GET /tasks/{id})
+  ![image](https://github.com/user-attachments/assets/d88657eb-71e6-4828-9440-64529433715b)
+
+- Actualizar el estado de una tarea (PUT /tasks/{id})
+  ![image](https://github.com/user-attachments/assets/15eb2c0c-ee1f-43b6-b36e-709948c13d88)
+
+- Eliminar una tarea (DELETE /tasks/{id})
+  ![image](https://github.com/user-attachments/assets/88a9be23-6a94-47f4-950b-f6343072a230)
+
 
 ## Retos de aprendizaje rápido
 
