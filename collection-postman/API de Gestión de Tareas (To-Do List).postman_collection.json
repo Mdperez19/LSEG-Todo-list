@@ -1,0 +1,142 @@
+{
+	"info": {
+		"_postman_id": "d80b77df-f081-477f-930e-d3ff8ad6a68c",
+		"name": "API de Gestión de Tareas (To-Do List)",
+		"description": "```\nAPI REST para gestión de tareas desarrollada con Spring Boot y PostgreSQL.\n\n ```",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22318289"
+	},
+	"item": [
+		{
+			"name": "Crear una tarea (POST /tasks)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"tarea3\",\r\n  \"description\": \"descripcion tarea 3\",\r\n  \"dueDate\": \"2025-05-29\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Protocol}}://{{Host}}:{{Port}}/tasks",
+					"protocol": "{{Protocol}}",
+					"host": [
+						"{{Host}}"
+					],
+					"port": "{{Port}}",
+					"path": [
+						"tasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar una lista de tareas (GET /tasks)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Protocol}}://{{Host}}:{{Port}}/tasks?page=0&size=2&sort=title,desc",
+					"protocol": "{{Protocol}}",
+					"host": [
+						"{{Host}}"
+					],
+					"port": "{{Port}}",
+					"path": [
+						"tasks"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "2"
+						},
+						{
+							"key": "sort",
+							"value": "title,desc"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar detalle de una tarea (GET /tasks/{id})",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Protocol}}://{{Host}}:{{Port}}/tasks/010a92aa-d380-46bc-b88f-d6a8956fca06",
+					"protocol": "{{Protocol}}",
+					"host": [
+						"{{Host}}"
+					],
+					"port": "{{Port}}",
+					"path": [
+						"tasks",
+						"010a92aa-d380-46bc-b88f-d6a8956fca06"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar el estado de una tarea (PUT /tasks/{id})",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"PENDING\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Protocol}}://{{Host}}:{{Port}}/tasks/261a5d57-2f08-4560-8cb5-40116b2c8f86/status",
+					"protocol": "{{Protocol}}",
+					"host": [
+						"{{Host}}"
+					],
+					"port": "{{Port}}",
+					"path": [
+						"tasks",
+						"261a5d57-2f08-4560-8cb5-40116b2c8f86",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar una tarea (DELETE /tasks/{id})",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{Protocol}}://{{Host}}:{{Port}}/tasks/261a5d57-2f08-4560-8cb5-40116b2c8f86",
+					"protocol": "{{Protocol}}",
+					"host": [
+						"{{Host}}"
+					],
+					"port": "{{Port}}",
+					"path": [
+						"tasks",
+						"261a5d57-2f08-4560-8cb5-40116b2c8f86"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
