@@ -19,7 +19,7 @@ public class PostgresTaskRepository implements TaskRepository {
     }
 
     @Override
-    public Task createTask(Task task) {
+    public Task save(Task task) {
         return jpaTaskRepository.save(task);
     }
 

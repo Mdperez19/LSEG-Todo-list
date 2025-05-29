@@ -22,6 +22,6 @@ public class CreationTask {
                 .status(Status.PENDING)
                 .build();
 
-        return taskRepository.createTask(newTask);
+        return taskRepository.save(newTask);
     }
 }

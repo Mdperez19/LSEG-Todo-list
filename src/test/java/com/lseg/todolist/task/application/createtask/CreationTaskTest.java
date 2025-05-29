@@ -49,7 +49,7 @@ class CreationTaskTest {
                 .status(Status.PENDING)
                 .build();
 
-        when(taskRepository.createTask(any(Task.class))).thenReturn(expectedTask);
+        when(taskRepository.save(any(Task.class))).thenReturn(expectedTask);
 
         // When
         Task result = creationTask.executeCreationTask(command);
@@ -61,6 +61,6 @@ class CreationTaskTest {
         assertThat(result.getDescription()).isEqualTo(command.description());
         assertThat(result.getDueDate()).isEqualTo(command.dueDate());
 
-        verify(taskRepository).createTask(any(Task.class));
+        verify(taskRepository).save(any(Task.class));
     }
 }

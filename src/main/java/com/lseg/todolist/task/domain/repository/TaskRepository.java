@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface TaskRepository {
-    Task createTask(Task task);
+    Task save(Task task);
     Page<Task> getAllTasks(Pageable pageable);
     Optional<Task> getTaskById(UUID id);
 }
