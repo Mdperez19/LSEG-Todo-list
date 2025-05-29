@@ -2,6 +2,7 @@ package com.lseg.todolist.task.infrastructure.controller;
 
 import com.lseg.todolist.task.application.createtask.CreationTask;
 import com.lseg.todolist.task.application.createtask.CreationTaskCommand;
+import com.lseg.todolist.task.application.deletetask.TaskDeleter;
 import com.lseg.todolist.task.application.readalltasks.TaskReader;
 import com.lseg.todolist.task.application.readtask.TaskDetailReader;
 import com.lseg.todolist.task.application.updatetaskstatus.TaskStatusUpdater;
@@ -25,12 +26,14 @@ public class TaskRestController {
     private final TaskReader taskReader;
     private final TaskDetailReader taskDetailReader;
     private final TaskStatusUpdater taskStatusUpdater;
+    private final TaskDeleter taskDeleter;
 
-    public TaskRestController(CreationTask creationTask, TaskReader taskReader, TaskDetailReader taskDetailReader, TaskStatusUpdater taskStatusUpdater) {
+    public TaskRestController(CreationTask creationTask, TaskReader taskReader, TaskDetailReader taskDetailReader, TaskStatusUpdater taskStatusUpdater, TaskDeleter taskDeleter) {
         this.creationTask = creationTask;
         this.taskReader = taskReader;
         this.taskDetailReader = taskDetailReader;
         this.taskStatusUpdater = taskStatusUpdater;
+        this.taskDeleter = taskDeleter;
     }
 
     @PostMapping
@@ -62,4 +65,15 @@ public class TaskRestController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable UUID id) {
+        try {
+            taskDeleter.executeDeleteTask(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

@@ -33,4 +33,9 @@ public class PostgresTaskRepository implements TaskRepository {
         return jpaTaskRepository.findById(id);
     }
 
+    @Override
+    public void deleteById(UUID id) {
+        jpaTaskRepository.deleteById(id);
+    }
+
 }

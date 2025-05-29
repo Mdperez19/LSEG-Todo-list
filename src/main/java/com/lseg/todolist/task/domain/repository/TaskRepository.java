@@ -11,4 +11,5 @@ public interface TaskRepository {
     Task save(Task task);
     Page<Task> getAllTasks(Pageable pageable);
     Optional<Task> getTaskById(UUID id);
+    void deleteById(UUID id);
 }
