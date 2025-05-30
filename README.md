@@ -10,8 +10,7 @@ API REST para gestión de tareas desarrollada con Spring Boot y PostgreSQL.
 - Persistencia en PostgreSQL
 - Dockerización de la aplicación
 - Tests unitarios
-- Para la creación de la base de datos se utilizó la configuración de `  jpa.hibernate.ddl-auto: update` para poder crear la base de datos automáticamente al iniciar la aplicación. Esto permite que la base de datos se cree y se actualice según las entidades definidas en el código, facilitando el desarrollo y las pruebas sin necesidad de crear manualmente la base de datos.
-- Se utilizó lombok para reducir el boilerplate en las entidades y DTOs, lo que mejora la legibilidad del código y reduce la cantidad de código repetitivo. Usando lombok tambien se usó el patrón de diseño *Builder* para la creación de objetos, lo que facilita la construcción de instancias complejas de manera más legible y mantenible.
+- Para la creación y migración del esquema de la base de datos se utiliza *Flyway*. Los scripts de migración SQL están en la carpeta `src/main/resources/db/migration`, lo que permite tener control sobre los cambios, mantener historial de versiones y garantizar que la base de datos siempre esté alineada con el código. Así, la base de datos se crea y actualiza automáticamente al iniciar la aplicación, sin necesidad de definir el esquema manualmente.
 - Arquitectura: Para este proyecto utilicé una *arquitectura hexagonal* combinado con *DDD*, que básicamente ayuda a separar bien la lógica del negocio de todo lo que tiene que ver con frameworks, base de datos o detalles técnicos.
   De esta forma, el “corazón” del sistema queda independiente y es más fácil de mantener y probar. Además, traté de seguir los principios *SOLID* para que el código sea más claro, ordenado y fácil de modificar si después se requiere agregar nuevas funciones o cambiar algo de la tecnología.
 
