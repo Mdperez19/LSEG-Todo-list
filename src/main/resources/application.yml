@@ -25,3 +25,7 @@ springdoc:
   swagger-ui:
     path: /api-docs/swagger-ui.html
 
+logging:
+  file:
+    name: logs/todo-app.log
+
