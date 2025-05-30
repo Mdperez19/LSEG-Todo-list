@@ -23,6 +23,11 @@ API REST para gestión de tareas desarrollada con Spring Boot y PostgreSQL.
 ## Ejecutar la Aplicación
 
 ```bash
+docker compose up db -d
+```
+Esperar unos segundos en lo que levanta la base de datos
+
+```bash
 ./mvnw clean package
 ```
 
