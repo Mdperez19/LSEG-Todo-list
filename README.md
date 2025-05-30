@@ -13,6 +13,7 @@ API REST para gestión de tareas desarrollada con Spring Boot y PostgreSQL.
 - Para la creación y migración del esquema de la base de datos se utiliza *Flyway*. Los scripts de migración SQL están en la carpeta `src/main/resources/db/migration`, lo que permite tener control sobre los cambios, mantener historial de versiones y garantizar que la base de datos siempre esté alineada con el código. Así, la base de datos se crea y actualiza automáticamente al iniciar la aplicación, sin necesidad de definir el esquema manualmente.
 - Arquitectura: Para este proyecto utilicé una *arquitectura hexagonal* combinado con *DDD*, que básicamente ayuda a separar bien la lógica del negocio de todo lo que tiene que ver con frameworks, base de datos o detalles técnicos.
   De esta forma, el “corazón” del sistema queda independiente y es más fácil de mantener y probar. Además, traté de seguir los principios *SOLID* para que el código sea más claro, ordenado y fácil de modificar si después se requiere agregar nuevas funciones o cambiar algo de la tecnología.
+- Se utilizó Lombok para reducir el boilerplate en las entidades, DTOs y para agregar el logging con la anotación @Slf4j en los casos de uso y controladores, esto facilita registrar eventos clave y errores sin escribir código repetitivo. Además lombok permite agregar el patrón de diseño `Builder`, pero al ser un patron de diseño que requiere mucho boilerplate, lombok ayuda bastante y mejora la legibilidad.
 
 ## Requisitos Previos
 
@@ -25,7 +26,7 @@ API REST para gestión de tareas desarrollada con Spring Boot y PostgreSQL.
 ```bash
 docker compose up db -d
 ```
-Esperar unos segundos en lo que levanta la base de datos
+Esperar unos segundos en lo que levanta la base de datos (esto es importante, ya que Flyway intentará conectarse de inmediato a la base de datos; si esta no está disponible, fallará la migración y la app no levantará :c).
 
 ```bash
 ./mvnw clean package
@@ -87,14 +88,21 @@ Ejemplos:
 
 Agrega brevemente en el README.md del proyecto:
 - ¿Qué pasos tomaste para aprender Swagger si no lo habías usado antes?
+  
 Cuando trabajé en Alpura no había usado Swagger antes, así que con ayuda de mis compañeros y la documentación oficial, pude integrarlo en el proyecto. Leí sobre las configuraciones básicas y cómo generar la documentación automáticamente. Además de como usar la interfaz de usuario para probar los endpoints.
 - ¿Cómo resolviste dudas sobre Docker?
+
 Ya había trabajado con Docker en proyectos anteriores, así que utilicé mis conocimientos previos y la documentación oficial de Docker para resolver dudas. También consulté foros y comunidades en línea cuando me encontré con problemas específicos. 
-
 Además tomé un curso en línea que me ayudó a entender mejor cómo funciona Docker 
-
 - ¿Qué desafíos encontraste?
 
-Tuve algunos desafíos al configurar la conexión entre la aplicación y la base de datos PostgreSQL en Docker, especialmente con la configuración de red y volúmenes, ya que no me había dado cuenta que tenía ya el puerto comun de postgresql en mi computadora, entonces me tardé un poco en encontrar que esa era la razón. También fue un reto inicial recordar cómo funcionaba Swagger y cómo integrarlo correctamente en el proyecto.
+Tuve algunos desafíos al configurar la conexión entre la aplicación y la base de datos PostgreSQL en Docker, especialmente con la configuración de red y volúmenes, ya que no me había dado cuenta que tenía ya el puerto común de PostgreSQL en mi computadora, entonces me tardé un poco en encontrar que esa era la razón.
+También se me complicó la parte de Flyway, porque me di cuenta que tenía que primero generar la base de datos PostgreSQL, ya que Flyway intenta conectarse y aplicar migraciones inmediatamente cuando la aplicación arranca; si la base no está disponible, Flyway falla y la aplicación no puede iniciar.
 - ¿Qué mejorarías si tuvieras más tiempo?
-Si tuviera más tiempo, mejoraría la documentación del proyecto para incluir más ejemplos de uso de los endpoints y una guía más detallada sobre cómo contribuir al proyecto. También implementaría pruebas de integración para asegurar que todos los componentes funcionen correctamente juntos. También me gustaría agregar funcionalidadades de Jenkins con SonarQube (aunque si usé Sonar de manera local) para mejorar la calidad del código y la integración continua. Además, consideraría implementar autenticación y autorización para proteger los endpoints de la API.
+
+Si tuviera más tiempo, mejoraría la documentación del proyecto para incluir más ejemplos de uso de los endpoints y una guía más detallada sobre cómo contribuir al proyecto. También implementaría pruebas de integración para asegurar que todos los componentes funcionen correctamente juntos. También me gustaría agregar funcionalidades de Jenkins con SonarQube (aunque sí usé Sonar de manera local) para mejorar la calidad del código y la integración continua.
+Además, consideraría implementar autenticación y autorización para proteger los endpoints de la API.
+
+Por temas de carga laboral no me fue posible agregar la parte de seguridad :c, pero tenía planeado crear una nueva entidad user dentro del árbol de carpetas siguiendo el mismo enfoque de arquitectura hexagonal y DDD.
+De ahí partiría agregando los casos de uso de crear usuario y buscar usuario por nombre, además de otra carpeta de seguridad donde pondría toda la parte de configuración de Spring Security.
+Dependiendo del tiempo, podría implementar desde una autenticación básica (usuario y contraseña en el encabezado Basic Auth), hasta OAuth2 usando Keycloak (he visto su uso en Alpura aunque lamentablemente no pude participar directamente, pero es algo que me gustaría estudiar a fondo para futuras versiones del proyecto).
