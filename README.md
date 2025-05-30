@@ -66,7 +66,7 @@ Ejemplos:
 - Ordenar por título ascendente: `/tasks?page=0&size=10&sort=title,asc`
 - Ordenar por fecha de vencimiento descendente: `/tasks?page=0&size=10&sort=dueDate,desc`
 
-### Pruebas en POSTMAN (Se incluye colección)
+### Pruebas en POSTMAN (Se incluye la colección en la carpeta `collection-postman` de este repo )
 
 - Crear una tarea (POST /tasks)
   ![image](https://github.com/user-attachments/assets/11c41a03-4a8a-46d3-809c-637e0e93e2e3)
@@ -86,7 +86,6 @@ Ejemplos:
 
 ## Retos de aprendizaje rápido
 
-Agrega brevemente en el README.md del proyecto:
 - ¿Qué pasos tomaste para aprender Swagger si no lo habías usado antes?
   
 Cuando trabajé en Alpura no había usado Swagger antes, así que con ayuda de mis compañeros y la documentación oficial, pude integrarlo en el proyecto. Leí sobre las configuraciones básicas y cómo generar la documentación automáticamente. Además de como usar la interfaz de usuario para probar los endpoints.
@@ -106,3 +105,5 @@ Además, consideraría implementar autenticación y autorización para proteger 
 Por temas de carga laboral no me fue posible agregar la parte de seguridad :c, pero tenía planeado crear una nueva entidad user dentro del árbol de carpetas siguiendo el mismo enfoque de arquitectura hexagonal y DDD.
 De ahí partiría agregando los casos de uso de crear usuario y buscar usuario por nombre, además de otra carpeta de seguridad donde pondría toda la parte de configuración de Spring Security.
 Dependiendo del tiempo, podría implementar desde una autenticación básica (usuario y contraseña en el encabezado Basic Auth), hasta OAuth2 usando Keycloak (he visto su uso en Alpura aunque lamentablemente no pude participar directamente, pero es algo que me gustaría estudiar a fondo para futuras versiones del proyecto).
+
+Aunque este ejercicio ya tiene su limite de tiempo, seguiré usando este proyecto para seguir aprendiendo nuevas tecnologias y metodologias c:
